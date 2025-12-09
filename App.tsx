@@ -465,7 +465,6 @@ const App: React.FC = () => {
                 onClose={() => setIsModalOpen(false)}
                 onSave={handleSaveTask}
                 taskToEdit={editingTask}
-                onError={(msg) => showToast(msg)}
             />
 
             <SettingsModal

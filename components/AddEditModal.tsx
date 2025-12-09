@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { SubTask, PriorityLevel, Task } from '../types';
-import { generateSubtasks } from '../services/geminiService';
-import { Sparkles, Loader2, Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AddEditModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (title: string, description: string, priority: PriorityLevel, reminder: string | undefined, subtasks: SubTask[]) => void;
-    onError: (message: string) => void;
     taskToEdit?: Task | null;
 }
 
-export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onSave, onError, taskToEdit }) => {
+export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onSave, taskToEdit }) => {
     const [isVisible, setIsVisible] = useState(false);
     
     const [title, setTitle] = useState('');
@@ -20,7 +18,6 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
     const [priority, setPriority] = useState<PriorityLevel>(PriorityLevel.MEDIUM);
     const [reminder, setReminder] = useState('');
     const [subtasks, setSubtasks] = useState<SubTask[]>([]);
-    const [isGenerating, setIsGenerating] = useState(false);
     
     useEffect(() => {
         if (isOpen) {
@@ -40,7 +37,6 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
                 setReminder('');
                 setSubtasks([]);
             }
-            setIsGenerating(false);
         } else {
              // Wait for animation to finish before hiding from DOM
              const timer = setTimeout(() => {
@@ -50,32 +46,20 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
         }
     }, [isOpen, taskToEdit]);
 
-    const handleGenerateSubtasks = async () => {
-        if (!title.trim()) return;
-        setIsGenerating(true);
-        try {
-            const rawSubtasks = await generateSubtasks(title);
-            const newSubtasks: SubTask[] = rawSubtasks.map(st => ({
-                id: uuidv4(),
-                title: st.title,
-                isCompleted: false
-            }));
-            // Append to existing
-            setSubtasks(prev => [...prev, ...newSubtasks]);
-        } catch (e) {
-            console.error("Failed to generate", e);
-            onError("Ошибка AI. Возможно, нужен VPN");
-        } finally {
-            setIsGenerating(false);
-        }
-    };
-
     const handleAddSubtask = () => {
         setSubtasks(prev => [...prev, {
             id: uuidv4(),
             title: '',
             isCompleted: false
         }]);
+    };
+
+    const handleRemoveSubtask = (id: string) => {
+        setSubtasks(prev => prev.filter(st => st.id !== id));
+    };
+
+    const handleUpdateSubtask = (id: string, value: string) => {
+        setSubtasks(prev => prev.map(st => st.id === id ? { ...st, title: value } : st));
     };
 
     const handleSave = () => {
@@ -178,57 +162,50 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
                                         {p === PriorityLevel.LOW ? 'Низ' : p === PriorityLevel.MEDIUM ? 'Сред' : 'Выс'}
                                     </button>
                                 ))}
-                             </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Steps Section */}
-                    <div className="space-y-3">
-                        <button 
-                            onClick={handleGenerateSubtasks}
-                            disabled={isGenerating || !title.trim()}
-                            className="w-full flex items-center justify-center gap-2 bg-ios-blue/10 active:bg-ios-blue/20 text-ios-blue py-3 rounded-xl transition-colors font-medium text-[17px]"
-                        >
-                            {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
-                            {isGenerating ? 'Генерирую шаги...' : 'Разбить на шаги с AI'}
-                        </button>
-
-                        <div className="bg-ios-card rounded-xl overflow-hidden shadow-sm">
-                            {subtasks.map((st, i) => (
-                                <div key={st.id} className="pl-4">
-                                    <div className="py-2 pr-4 border-b border-ios-separator flex items-center gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-ios-blue flex-shrink-0"></div>
-                                        <input 
-                                            value={st.title}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                setSubtasks(prev => prev.map(s => s.id === st.id ? {...s, title: val} : s));
-                                            }}
-                                            placeholder="Шаг..."
-                                            className="text-[17px] text-ios-text bg-transparent w-full outline-none placeholder-ios-textSec/50"
-                                        />
-                                        <button 
-                                            onClick={() => setSubtasks(prev => prev.filter(s => s.id !== st.id))}
-                                            className="text-ios-textSec hover:text-ios-red p-2"
-                                        >
-                                            &times;
-                                        </button>
-                                    </div>
+                    {/* Subtasks Section */}
+                    <div className="bg-ios-card rounded-xl overflow-hidden shadow-sm p-4">
+                        <div className="flex items-center justify-between mb-3">
+                             <span className="text-[17px] text-ios-text">Подзадачи</span>
+                        </div>
+                        
+                        <div className="space-y-0">
+                            {subtasks.map((st) => (
+                                <div key={st.id} className="flex items-center gap-2 py-2 border-b border-ios-separator/50 last:border-0">
+                                     <div className={`w-4 h-4 rounded-full border ${st.isCompleted ? 'bg-ios-blue border-ios-blue' : 'border-ios-textSec'}`}></div>
+                                     <input
+                                        type="text"
+                                        value={st.title}
+                                        onChange={(e) => handleUpdateSubtask(st.id, e.target.value)}
+                                        placeholder="Шаг..."
+                                        className="flex-1 bg-transparent text-[15px] text-ios-text outline-none placeholder-ios-textSec/50"
+                                     />
+                                     <button 
+                                        onClick={() => handleRemoveSubtask(st.id)}
+                                        className="text-ios-textSec p-1 hover:text-ios-red transition-colors"
+                                     >
+                                        <X size={16} />
+                                     </button>
                                 </div>
                             ))}
-                            
-                            {/* Manual Add Button */}
-                            <button 
-                                onClick={handleAddSubtask}
-                                className="w-full flex items-center gap-3 p-4 active:bg-ios-cardHigh transition-colors"
-                            >
-                                <div className="w-5 h-5 rounded-full bg-ios-green flex items-center justify-center">
-                                    <Plus size={14} className="text-white stroke-[3]" />
-                                </div>
-                                <span className="text-[17px] text-ios-text">Добавить шаг</span>
-                            </button>
                         </div>
+
+                        <button 
+                            onClick={handleAddSubtask}
+                            className="mt-3 flex items-center gap-2 text-ios-textSec hover:text-ios-blue transition-colors w-full"
+                        >
+                            <div className="w-5 h-5 rounded-full bg-ios-green flex items-center justify-center">
+                                <Plus size={14} className="text-white" strokeWidth={3} />
+                            </div>
+                            <span className="text-[15px]">Добавить шаг</span>
+                        </button>
                     </div>
+
+                    {/* Spacer for bottom safe area */}
+                    <div className="h-10"></div>
                 </div>
             </div>
         </div>
