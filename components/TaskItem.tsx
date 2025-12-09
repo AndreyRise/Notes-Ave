@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Task, SubTask, PriorityLevel } from '../types';
-import { Check, Trash2, ChevronDown, ChevronUp, Clock, AlertCircle, Pencil } from 'lucide-react';
+import { Task, PriorityLevel } from '../types';
+import { Check, Trash2, Clock, AlertCircle, Pencil } from 'lucide-react';
 
 interface TaskItemProps {
     task: Task;
