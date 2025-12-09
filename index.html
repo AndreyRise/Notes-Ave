@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Notes Ave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              ios: {
+                bg: 'var(--ios-bg)',
+                sheet: 'var(--ios-sheet-bg)',
+                card: 'var(--ios-card)',
+                cardHigh: 'var(--ios-card-high)',
+                separator: 'var(--ios-separator)',
+                blue: '#007AFF',
+                red: '#FF3B30',
+                green: '#34C759',
+                text: 'var(--ios-text)',
+                textSec: 'var(--ios-text-sec)',
+                btnText: 'var(--ios-btn-text)',
+              }
+            },
+            fontFamily: {
+              sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            },
+            boxShadow: {
+              'ios': '0 4px 20px rgba(0,0,0,0.1)',
+            },
+            padding: {
+              'safe-area': 'env(safe-area-inset-bottom)',
+            },
+            keyframes: {
+              'slide-up': {
+                '0%': { transform: 'translateY(100%)' },
+                '100%': { transform: 'translateY(0)' },
+              },
+              'slide-down': {
+                '0%': { transform: 'translateY(0)' },
+                '100%': { transform: 'translateY(100%)' },
+              },
+              'fade-in': {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              'fade-out': {
+                '0%': { opacity: '1' },
+                '100%': { opacity: '0' },
+              },
+              'scale-in': {
+                '0%': { opacity: '0', transform: 'scale(1.1)' },
+                '100%': { opacity: '1', transform: 'scale(1)' },
+              }
+            },
+            animation: {
+              'slide-up': 'slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'slide-down': 'slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'fade-in': 'fade-in 0.2s ease-out forwards',
+              'fade-out': 'fade-out 0.2s ease-in forwards',
+              'scale-in': 'scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        /* Light Theme (Default) */
+        --ios-bg: #F2F2F7;
+        --ios-sheet-bg: #FFFFFF;
+        --ios-card: #FFFFFF;
+        --ios-card-high: #E5E5EA;
+        --ios-separator: #C6C6C8;
+        --ios-text: #000000;
+        --ios-text-sec: #8E8E93;
+        --ios-btn-text: #007AFF;
+      }
+
+      .dark {
+        /* Dark Theme */
+        --ios-bg: #000000;
+        --ios-sheet-bg: #000000; /* True Black for sheets */
+        --ios-card: #1C1C1E;
+        --ios-card-high: #323234; /* Slightly lighter than card for controls */
+        --ios-separator: #38383A;
+        --ios-text: #FFFFFF;
+        --ios-text-sec: #8E8E93;
+        --ios-btn-text: #0A84FF;
+      }
+
+      body {
+        background-color: var(--ios-bg);
+        color: var(--ios-text);
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Hide scrollbar for clean UI */
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
+    "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
