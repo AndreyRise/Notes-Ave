@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Notes Ave</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -85,9 +85,9 @@
       .dark {
         /* Dark Theme */
         --ios-bg: #000000;
-        --ios-sheet-bg: #000000; /* True Black for sheets */
+        --ios-sheet-bg: #000000;
         --ios-card: #1C1C1E;
-        --ios-card-high: #323234; /* Slightly lighter than card for controls */
+        --ios-card-high: #323234;
         --ios-separator: #38383A;
         --ios-text: #FFFFFF;
         --ios-text-sec: #8E8E93;
@@ -99,26 +99,28 @@
         color: var(--ios-text);
         -webkit-tap-highlight-color: transparent;
       }
-      
-      /* Hide scrollbar for clean UI */
+
+      /* Hide scrollbar */
       ::-webkit-scrollbar {
         width: 0px;
         background: transparent;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
-    "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.1",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+        "react/": "https://aistudiocdn.com/react@^19.2.1/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+        "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
+        "vite": "https://aistudiocdn.com/vite@^7.2.7",
+        "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.2"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

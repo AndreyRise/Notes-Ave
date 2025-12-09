@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Task, SubTask } from '../types';
+import { Task, SubTask, PriorityLevel } from '../types';
 import { Check, Trash2, ChevronDown, ChevronUp, Clock, AlertCircle, Pencil } from 'lucide-react';
 
 interface TaskItemProps {
@@ -67,7 +67,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                                 </span>
                             )}
                             
-                            {task.priority === 'high' && !task.isCompleted && (
+                            {task.priority === PriorityLevel.HIGH && !task.isCompleted && (
                                 <span className="text-ios-blue text-[13px] font-medium flex items-center gap-1">
                                     <AlertCircle size={13}/> Важно
                                 </span>

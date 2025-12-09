@@ -12,7 +12,7 @@ export interface Task {
     createdAt: number;
     reminderTime?: string; // ISO string
     subTasks: SubTask[];
-    priority: 'low' | 'medium' | 'high';
+    priority: PriorityLevel;
 }
 
 export type FilterType = 'all' | 'active' | 'completed';

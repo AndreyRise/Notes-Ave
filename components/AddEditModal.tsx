@@ -175,7 +175,7 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
                                             ${priority === p ? 'bg-white text-black shadow-sm dark:bg-[#636366] dark:text-white' : 'text-ios-textSec'}
                                         `}
                                     >
-                                        {p === 'low' ? 'Низ' : p === 'medium' ? 'Сред' : 'Выс'}
+                                        {p === PriorityLevel.LOW ? 'Низ' : p === PriorityLevel.MEDIUM ? 'Сред' : 'Выс'}
                                     </button>
                                 ))}
                              </div>

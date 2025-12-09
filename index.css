@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Theme (Default) */
+  --ios-bg: #F2F2F7;
+  --ios-sheet-bg: #FFFFFF;
+  --ios-card: #FFFFFF;
+  --ios-card-high: #E5E5EA;
+  --ios-separator: #C6C6C8;
+  --ios-text: #000000;
+  --ios-text-sec: #8E8E93;
+  --ios-btn-text: #007AFF;
+}
+
+.dark {
+  /* Dark Theme */
+  --ios-bg: #000000;
+  --ios-sheet-bg: #000000; /* True Black for sheets */
+  --ios-card: #1C1C1E;
+  --ios-card-high: #323234; /* Slightly lighter than card for controls */
+  --ios-separator: #38383A;
+  --ios-text: #FFFFFF;
+  --ios-text-sec: #8E8E93;
+  --ios-btn-text: #0A84FF;
+}
+
+body {
+  background-color: var(--ios-bg);
+  color: var(--ios-text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbar for clean UI */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
