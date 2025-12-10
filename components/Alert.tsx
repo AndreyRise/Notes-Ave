@@ -36,14 +36,14 @@ export const Alert: React.FC<AlertProps> = ({ isOpen, title, message, buttons, o
 
     return (
         <div className="fixed inset-0 z-[60] flex flex-col justify-end">
-            {/* Backdrop */}
+            {/* Backdrop - Added opacity-0 */}
             <div 
-                className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] ${backdropAnimation}`}
+                className={`fixed inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 ${backdropAnimation}`}
                 onClick={onClose}
             />
 
-            {/* Modal Sheet */}
-            <div className={`relative w-full bg-ios-bg rounded-t-[20px] shadow-ios pb-safe-area overflow-hidden z-10 ${modalAnimation}`}>
+            {/* Modal Sheet - Added translate-y-full */}
+            <div className={`relative w-full bg-ios-bg rounded-t-[20px] shadow-ios pb-safe-area overflow-hidden z-10 translate-y-full ${modalAnimation}`}>
                 
                 {/* Grabber */}
                 <div className="w-full flex justify-center pt-3 pb-2" onClick={onClose}>

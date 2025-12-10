@@ -75,14 +75,14 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
 
     return (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
-            {/* Backdrop */}
+            {/* Backdrop - Added opacity-0 to prevent flash */}
             <div 
-                className={`fixed inset-0 bg-black/60 backdrop-blur-[2px] ${backdropAnimation}`}
+                className={`fixed inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 ${backdropAnimation}`}
                 onClick={onClose}
             />
             
-            {/* Modal Sheet */}
-            <div className={`relative w-full bg-ios-sheet rounded-t-[20px] shadow-ios pb-safe-area overflow-hidden z-10 ${modalAnimation}`}>
+            {/* Modal Sheet - Added translate-y-full to prevent flash */}
+            <div className={`relative w-full bg-ios-sheet rounded-t-[20px] shadow-ios pb-safe-area overflow-hidden z-10 translate-y-full ${modalAnimation}`}>
                 
                 {/* Grabber */}
                 <div className="w-full flex justify-center pt-3 pb-1" onClick={onClose}>
