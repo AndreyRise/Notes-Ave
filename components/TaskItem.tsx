@@ -103,7 +103,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                                         e.stopPropagation();
                                         onEdit(task);
                                     }}
-                                    className="flex-1 bg-ios-cardHigh py-2 px-3 rounded-lg text-[15px] font-medium text-ios-text flex items-center justify-center gap-2 active:bg-ios-cardHigh/80"
+                                    className="flex-1 bg-ios-cardHigh py-2 px-5 rounded-lg text-[15px] font-medium text-ios-text flex items-center justify-center gap-2 active:bg-ios-cardHigh/80"
                                 >
                                     <Pencil size={16} /> Редактировать
                                 </button>
@@ -112,7 +112,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                                         e.stopPropagation();
                                         onDelete(task.id);
                                     }}
-                                    className="flex-1 bg-ios-red/10 py-2 px-3 rounded-lg text-[15px] font-medium text-ios-red flex items-center justify-center gap-2 active:bg-ios-red/20"
+                                    className="flex-1 bg-ios-red/10 py-2 px-5 rounded-lg text-[15px] font-medium text-ios-red flex items-center justify-center gap-2 active:bg-ios-red/20"
                                 >
                                     <Trash2 size={16} /> Удалить
                                 </button>
