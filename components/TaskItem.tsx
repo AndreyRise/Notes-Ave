@@ -97,24 +97,26 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                             )}
 
                             {/* Action Buttons Row */}
-                            <div className="flex items-center gap-3 pt-3 border-t border-ios-separator/50 mt-1">
+                            <div className="flex items-center justify-end gap-3 pt-2 mt-1">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onEdit(task);
                                     }}
-                                    className="flex-1 bg-ios-cardHigh py-2 px-5 rounded-lg text-[15px] font-medium text-ios-text flex items-center justify-center gap-2 active:bg-ios-cardHigh/80"
+                                    className="w-10 h-10 bg-ios-cardHigh rounded-full text-ios-text flex items-center justify-center active:bg-ios-cardHigh/80 transition-colors shadow-sm"
+                                    aria-label="Редактировать"
                                 >
-                                    <Pencil size={16} /> Редактировать
+                                    <Pencil size={18} />
                                 </button>
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onDelete(task.id);
                                     }}
-                                    className="flex-1 bg-ios-red/10 py-2 px-5 rounded-lg text-[15px] font-medium text-ios-red flex items-center justify-center gap-2 active:bg-ios-red/20"
+                                    className="w-10 h-10 bg-ios-red/10 rounded-full text-ios-red flex items-center justify-center active:bg-ios-red/20 transition-colors shadow-sm"
+                                    aria-label="Удалить"
                                 >
-                                    <Trash2 size={16} /> Удалить
+                                    <Trash2 size={18} />
                                 </button>
                             </div>
                         </div>

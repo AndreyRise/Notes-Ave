@@ -158,7 +158,7 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
                         
                         <div className="space-y-0">
                             {subtasks.map((st) => (
-                                <div key={st.id} className="flex items-center gap-2 py-2 border-b border-ios-separator/50 last:border-0">
+                                <div key={st.id} className="flex items-center gap-2 py-2">
                                      <div className={`w-4 h-4 rounded-full border ${st.isCompleted ? 'bg-ios-blue border-ios-blue' : 'border-ios-textSec'}`}></div>
                                      <input
                                         type="text"
