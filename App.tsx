@@ -361,27 +361,37 @@ const App: React.FC = () => {
         <div className="min-h-screen bg-ios-bg pb-24 text-ios-text font-sans antialiased selection:bg-ios-blue/30 transition-colors duration-300">
             {/* iOS Style Large Header */}
             <header className="pt-8 pb-2 px-5 bg-ios-bg sticky top-0 z-30 transition-colors duration-300">
-                <div className="flex justify-between items-end mb-4">
-                    {/* Left: Title */}
+                <div className="flex justify-between items-start mb-4">
+                    {/* Left: Title & Stats */}
                     <div>
                         <h1 className="text-[34px] font-bold tracking-tight text-ios-text leading-tight">
                             Мои задачи
                         </h1>
                         <p className="text-[13px] text-ios-textSec font-medium uppercase tracking-wide mt-1">
-                            {user?.first_name ? `${user.first_name}` : 'Гость'} • {stats.active} активных
+                            {stats.active} активных • {stats.completed} завершено
                         </p>
                     </div>
 
-                    {/* Right: Settings Button */}
-                    <button 
-                        onClick={() => {
-                            triggerHaptic('light');
-                            setIsSettingsOpen(true);
-                        }}
-                        className="w-9 h-9 bg-ios-cardHigh rounded-full flex items-center justify-center text-ios-blue active:opacity-70 transition-opacity"
-                    >
-                        <Settings size={20} />
-                    </button>
+                    {/* Right: Controls */}
+                    <div className="flex items-center gap-3 mt-1">
+                        <button 
+                            onClick={() => {
+                                triggerHaptic('light');
+                                setIsSettingsOpen(true);
+                            }}
+                            className="w-10 h-10 bg-ios-cardHigh rounded-full flex items-center justify-center text-ios-text hover:bg-ios-cardHigh/80 active:scale-95 transition-all shadow-sm"
+                        >
+                            <Settings size={20} />
+                        </button>
+                        
+                        {user?.photo_url && (
+                            <img 
+                                src={user.photo_url}
+                                alt="Profile" 
+                                className="w-10 h-10 rounded-full border border-ios-separator/20 shadow-sm"
+                            />
+                        )}
+                    </div>
                 </div>
 
                 {/* Search / Filter Bar (Visual only for now, acts as filter switcher) */}
