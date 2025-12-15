@@ -4,7 +4,7 @@ import { AddEditModal } from './components/AddEditModal';
 import { SettingsModal } from './components/SettingsModal';
 import { Alert } from './components/Alert';
 import { Task, FilterType, PriorityLevel, SubTask } from './types';
-import { Plus, Loader2, Settings } from 'lucide-react';
+import { Plus, Loader2, Settings, Check } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 declare global {
@@ -15,6 +15,7 @@ declare global {
                 expand: () => void;
                 close: () => void;
                 sendData: (data: string) => void;
+                requestWriteAccess: (callback?: (allowed: boolean) => void) => void;
                 isVersionAtLeast: (version: string) => boolean;
                 MainButton: any;
                 BackButton: any;
@@ -208,9 +209,10 @@ const App: React.FC = () => {
         return { total, active, completed };
     }, [tasks]);
 
-    const triggerHaptic = (type: 'success' | 'light' | 'medium') => {
+    const triggerHaptic = (type: 'success' | 'light' | 'medium' | 'selection') => {
         if (!tg) return;
         if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+        else if (type === 'selection') tg.HapticFeedback.selectionChanged();
         else tg.HapticFeedback.impactOccurred(type);
     };
 
@@ -223,7 +225,6 @@ const App: React.FC = () => {
         title: string, 
         description: string, 
         priority: PriorityLevel, 
-        reminder: string | undefined, 
         subtasks: SubTask[]
     ) => {
         if (editingTask) {
@@ -235,7 +236,6 @@ const App: React.FC = () => {
                         title,
                         description,
                         priority,
-                        reminderTime: reminder,
                         subTasks: subtasks,
                     };
                 }
@@ -250,14 +250,12 @@ const App: React.FC = () => {
                 title,
                 description,
                 priority,
-                reminderTime: reminder,
                 subTasks: subtasks,
                 isCompleted: false,
                 createdAt: Date.now(),
             };
             setTasks(prev => [newTask, ...prev]);
             triggerHaptic('success');
-            if (reminder) showToast("Напоминание установлено");
         }
         setEditingTask(null); // Reset editing state
     };
@@ -366,81 +364,60 @@ const App: React.FC = () => {
                 <div className="flex justify-between items-end mb-4">
                     {/* Left: Title */}
                     <div>
-                        <h1 className="text-[34px] font-bold leading-tight tracking-tight text-ios-text">
+                        <h1 className="text-[34px] font-bold tracking-tight text-ios-text leading-tight">
                             Мои задачи
                         </h1>
-                        <p className="text-[15px] font-medium text-ios-textSec mt-1">
-                            {user?.first_name || 'Notes Ave'} • {stats.active} осталось
+                        <p className="text-[13px] text-ios-textSec font-medium uppercase tracking-wide mt-1">
+                            {user?.first_name ? `${user.first_name}` : 'Гость'} • {stats.active} активных
                         </p>
                     </div>
 
-                    {/* Right: Actions */}
-                    <div className="flex items-center gap-3 mb-2">
-                         <button
-                            onClick={() => {
-                                triggerHaptic('light');
-                                setIsSettingsOpen(true);
-                            }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center text-ios-text active:opacity-50 transition-opacity"
-                         >
-                            <Settings size={24} strokeWidth={2} />
-                         </button>
-                        
-                        {user?.photo_url && (
-                            <img 
-                                src={user.photo_url} 
-                                alt="Profile" 
-                                className="w-9 h-9 rounded-full bg-ios-cardHigh object-cover"
-                            />
-                        )}
-                    </div>
-                </div>
-
-                {/* iOS Segmented Control */}
-                <div className="bg-ios-cardHigh/50 p-0.5 rounded-lg flex relative backdrop-blur-sm">
+                    {/* Right: Settings Button */}
                     <button 
                         onClick={() => {
                             triggerHaptic('light');
-                            setFilter('active');
+                            setIsSettingsOpen(true);
                         }}
-                        className={`
-                            flex-1 py-1.5 text-[13px] font-medium rounded-[6px] transition-all duration-200 z-10
-                            ${filter === 'active' ? 'bg-ios-card text-ios-text shadow-sm' : 'text-ios-textSec'}
-                        `}
+                        className="w-9 h-9 bg-ios-cardHigh rounded-full flex items-center justify-center text-ios-blue active:opacity-70 transition-opacity"
+                    >
+                        <Settings size={20} />
+                    </button>
+                </div>
+
+                {/* Search / Filter Bar (Visual only for now, acts as filter switcher) */}
+                <div className="bg-ios-cardHigh/50 p-1 rounded-xl flex">
+                    <button 
+                        onClick={() => { setFilter('active'); triggerHaptic('selection'); }}
+                        className={`flex-1 py-1.5 text-[13px] font-medium rounded-lg transition-all ${filter === 'active' ? 'bg-ios-card shadow-sm text-ios-text' : 'text-ios-textSec'}`}
                     >
                         Активные
                     </button>
                     <button 
-                         onClick={() => {
-                            triggerHaptic('light');
-                            setFilter('completed');
-                        }}
-                        className={`
-                            flex-1 py-1.5 text-[13px] font-medium rounded-[6px] transition-all duration-200 z-10
-                            ${filter === 'completed' ? 'bg-ios-card text-ios-text shadow-sm' : 'text-ios-textSec'}
-                        `}
+                         onClick={() => { setFilter('completed'); triggerHaptic('selection'); }}
+                        className={`flex-1 py-1.5 text-[13px] font-medium rounded-lg transition-all ${filter === 'completed' ? 'bg-ios-card shadow-sm text-ios-text' : 'text-ios-textSec'}`}
                     >
                         Завершенные
                     </button>
                 </div>
             </header>
 
-            {/* Task List - Inset Grouped Style */}
-            <main className="px-4 mt-2">
+            {/* Task List */}
+            <main className="px-5 mt-2">
                 {filteredTasks.length === 0 ? (
-                    <div className="py-20 text-center text-ios-textSec">
-                        <p className="text-[17px]">
-                            {filter === 'active' 
-                                ? 'Нет активных задач' 
-                                : 'Список завершенных пуст'}
+                    <div className="flex flex-col items-center justify-center py-20 opacity-40">
+                        <div className="w-16 h-16 bg-ios-cardHigh rounded-full flex items-center justify-center mb-4">
+                            {filter === 'active' ? <Plus size={32} /> : <Check size={32} />}
+                        </div>
+                        <p className="text-[17px] font-medium text-ios-textSec">
+                            {filter === 'active' ? 'Нет активных задач' : 'Нет завершенных задач'}
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-ios-card rounded-xl overflow-hidden shadow-sm transition-colors duration-300">
+                    <div className="bg-ios-card rounded-xl overflow-hidden shadow-sm">
                         {filteredTasks.map((task, index) => (
-                            <TaskItem 
-                                key={task.id} 
-                                task={task} 
+                            <TaskItem
+                                key={task.id}
+                                task={task}
                                 isLast={index === filteredTasks.length - 1}
                                 onToggle={handleToggleTask}
                                 onDelete={handleDeleteTask}
@@ -452,16 +429,29 @@ const App: React.FC = () => {
                 )}
             </main>
 
-            {/* Floating Action Button */}
-            <button
-                onClick={handleOpenAddModal}
-                className="fixed bottom-8 right-6 w-14 h-14 bg-ios-blue rounded-full shadow-ios flex items-center justify-center text-white active:scale-90 active:opacity-80 transition-all z-40"
-            >
-                <Plus size={30} strokeWidth={2.5} />
-            </button>
+            {/* Floating Action Button (FAB) */}
+            <div className="fixed bottom-8 right-5 z-40">
+                <button
+                    onClick={handleOpenAddModal}
+                    className="w-14 h-14 bg-ios-blue rounded-full shadow-lg shadow-ios-blue/30 flex items-center justify-center text-white active:scale-95 transition-transform"
+                >
+                    <Plus size={28} strokeWidth={2.5} />
+                </button>
+            </div>
 
+            {/* Custom Toast Notification */}
+            {showNotification && (
+                <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] animate-fade-in">
+                    <div className="bg-ios-card/80 backdrop-blur-md shadow-lg rounded-full px-4 py-2 flex items-center gap-2 border border-ios-separator/20">
+                        <Check size={14} className="text-ios-green stroke-[3]" />
+                        <span className="text-[13px] font-medium text-ios-text">{showNotification}</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Modals */}
             <AddEditModal 
-                isOpen={isModalOpen} 
+                isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSave={handleSaveTask}
                 taskToEdit={editingTask}
@@ -474,7 +464,7 @@ const App: React.FC = () => {
                 onThemeChange={setTheme}
                 onDeleteAll={handleDeleteAll}
             />
-            
+
             <Alert
                 isOpen={alertConfig.isOpen}
                 title={alertConfig.title}
@@ -482,13 +472,6 @@ const App: React.FC = () => {
                 buttons={alertConfig.buttons}
                 onClose={closeAlert}
             />
-
-            {/* Simple Toast */}
-            {showNotification && (
-                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-[#333333]/90 backdrop-blur-md text-white px-5 py-3 rounded-full text-[15px] font-medium shadow-ios animate-fade-in z-50">
-                    {showNotification}
-                </div>
-            )}
         </div>
     );
 };

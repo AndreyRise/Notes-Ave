@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface AddEditModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (title: string, description: string, priority: PriorityLevel, reminder: string | undefined, subtasks: SubTask[]) => void;
+    onSave: (title: string, description: string, priority: PriorityLevel, subtasks: SubTask[]) => void;
     taskToEdit?: Task | null;
 }
 
@@ -16,7 +16,6 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState<PriorityLevel>(PriorityLevel.MEDIUM);
-    const [reminder, setReminder] = useState('');
     const [subtasks, setSubtasks] = useState<SubTask[]>([]);
     
     useEffect(() => {
@@ -27,14 +26,12 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
                 setTitle(taskToEdit.title);
                 setDescription(taskToEdit.description || '');
                 setPriority(taskToEdit.priority);
-                setReminder(taskToEdit.reminderTime || '');
                 setSubtasks(taskToEdit.subTasks || []);
             } else {
                 // Add Mode: Reset fields
                 setTitle('');
                 setDescription('');
                 setPriority(PriorityLevel.MEDIUM);
-                setReminder('');
                 setSubtasks([]);
             }
         } else {
@@ -64,7 +61,7 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
 
     const handleSave = () => {
         if (!title.trim()) return;
-        onSave(title, description, priority, reminder || undefined, subtasks.filter(st => st.title.trim() !== ''));
+        onSave(title, description, priority, subtasks.filter(st => st.title.trim() !== ''));
         onClose();
     };
 
@@ -133,19 +130,6 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({ isOpen, onClose, onS
 
                     {/* Options Group */}
                     <div className="bg-ios-card rounded-xl overflow-hidden shadow-sm">
-                        {/* Date Picker row */}
-                        <div className="flex items-center justify-between p-4 bg-ios-card active:bg-ios-cardHigh transition-colors">
-                            <span className="text-[17px] text-ios-text">Напоминание</span>
-                            <input 
-                                type="datetime-local" 
-                                value={reminder}
-                                onChange={(e) => setReminder(e.target.value)}
-                                className="bg-transparent text-ios-blue text-[17px] outline-none text-right"
-                            />
-                        </div>
-
-                         <div className="h-[0.5px] bg-ios-separator mx-4"></div>
-
                         {/* Priority row */}
                         <div className="flex items-center justify-between p-4 bg-ios-card">
                              <span className="text-[17px] text-ios-text">Приоритет</span>

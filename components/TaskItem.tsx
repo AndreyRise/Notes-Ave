@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Task, PriorityLevel } from '../types';
-import { Check, Trash2, Clock, AlertCircle, Pencil } from 'lucide-react';
+import { Check, Trash2, AlertCircle, Pencil } from 'lucide-react';
 
 interface TaskItemProps {
     task: Task;
@@ -13,13 +13,6 @@ interface TaskItemProps {
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDelete, onEdit, onToggleSubTask }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-
-    // Format date nicely
-    const formatDate = (isoString?: string) => {
-        if (!isoString) return null;
-        const date = new Date(isoString);
-        return date.toLocaleString('ru-RU', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    };
 
     const totalSubtasks = task.subTasks.length;
     const completedSubtasks = task.subTasks.filter(st => st.isCompleted).length;
@@ -60,13 +53,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                         )}
 
                         <div className="flex items-center gap-3 mt-1.5">
-                            {task.reminderTime && (
-                                <span className={`flex items-center gap-1 text-[13px] ${new Date(task.reminderTime) < new Date() ? 'text-ios-red' : 'text-ios-textSec'}`}>
-                                    <Clock size={13} />
-                                    {formatDate(task.reminderTime)}
-                                </span>
-                            )}
-                            
                             {task.priority === PriorityLevel.HIGH && !task.isCompleted && (
                                 <span className="text-ios-blue text-[13px] font-medium flex items-center gap-1">
                                     <AlertCircle size={13}/> Важно
@@ -117,7 +103,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                                         e.stopPropagation();
                                         onEdit(task);
                                     }}
-                                    className="flex-1 bg-ios-cardHigh py-2 rounded-lg text-[15px] font-medium text-ios-text flex items-center justify-center gap-2 active:bg-ios-cardHigh/80"
+                                    className="flex-1 bg-ios-cardHigh py-2 px-3 rounded-lg text-[15px] font-medium text-ios-text flex items-center justify-center gap-2 active:bg-ios-cardHigh/80"
                                 >
                                     <Pencil size={16} /> Редактировать
                                 </button>
@@ -126,7 +112,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isLast, onToggle, onDe
                                         e.stopPropagation();
                                         onDelete(task.id);
                                     }}
-                                    className="flex-1 bg-ios-red/10 py-2 rounded-lg text-[15px] font-medium text-ios-red flex items-center justify-center gap-2 active:bg-ios-red/20"
+                                    className="flex-1 bg-ios-red/10 py-2 px-3 rounded-lg text-[15px] font-medium text-ios-red flex items-center justify-center gap-2 active:bg-ios-red/20"
                                 >
                                     <Trash2 size={16} /> Удалить
                                 </button>

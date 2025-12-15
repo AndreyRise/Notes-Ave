@@ -1,3 +1,4 @@
+
 export interface SubTask {
     id: string;
     title: string;
@@ -10,7 +11,6 @@ export interface Task {
     description?: string;
     isCompleted: boolean;
     createdAt: number;
-    reminderTime?: string; // ISO string
     subTasks: SubTask[];
     priority: PriorityLevel;
 }
