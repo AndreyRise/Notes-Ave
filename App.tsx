@@ -361,7 +361,7 @@ const App: React.FC = () => {
         <div className="min-h-screen bg-ios-bg pb-24 text-ios-text font-sans antialiased selection:bg-ios-blue/30 transition-colors duration-300">
             {/* iOS Style Large Header */}
             <header className="pt-8 pb-2 px-5 bg-ios-bg sticky top-0 z-30 transition-colors duration-300">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-center mb-4">
                     {/* Left: Title & Stats */}
                     <div>
                         <h1 className="text-[34px] font-bold tracking-tight text-ios-text leading-tight">
@@ -373,7 +373,15 @@ const App: React.FC = () => {
                     </div>
 
                     {/* Right: Controls */}
-                    <div className="flex items-center gap-3 mt-1">
+                    <div className="flex items-center gap-3">
+                        {user?.photo_url && (
+                            <img 
+                                src={user.photo_url}
+                                alt="Profile" 
+                                className="w-10 h-10 rounded-full shadow-sm"
+                            />
+                        )}
+                        
                         <button 
                             onClick={() => {
                                 triggerHaptic('light');
@@ -383,14 +391,6 @@ const App: React.FC = () => {
                         >
                             <Settings size={20} />
                         </button>
-                        
-                        {user?.photo_url && (
-                            <img 
-                                src={user.photo_url}
-                                alt="Profile" 
-                                className="w-10 h-10 rounded-full border border-ios-separator/20 shadow-sm"
-                            />
-                        )}
                     </div>
                 </div>
 
